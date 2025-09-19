@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splitify/screens/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -64,7 +65,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 height: 20,
               ),
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                   ),
@@ -74,10 +78,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   )),
               SizedBox(
                 height: 20,
-              ),
-              Text(
-                'Allready Have An Account? Log In',
-                style: TextStyle(fontSize: 20),
               ),
             ],
           ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:splitify/home/home_screen.dart';
 import 'package:splitify/screens/forgot_password.dart';
 import 'package:splitify/screens/signup_screen.dart';
+import 'package:splitify/screens/splash_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,7 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 20,
               ),
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                   ),
@@ -98,7 +106,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 20,
               ),
               ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    //if successfully logged in (cred are correct)
+
+                    var sharedPref = await SharedPreferences.getInstance();
+                    sharedPref.setBool(SplashScreenState.KEYLOGIN, true);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SignupScreen()),
