@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:splitify/home/bottombar_screen.dart';
 import 'package:splitify/home/home_screen.dart';
 import 'package:splitify/screens/forgot_password.dart';
 import 'package:splitify/screens/signup_screen.dart';
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(builder: (context) => BottomBarScreen()),
                     );
                   },
                   style: ElevatedButton.styleFrom(

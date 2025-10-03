@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:splitify/home/home_screen.dart';
 import 'package:splitify/screens/change_successfully.dart';
 import 'package:splitify/screens/login_screen.dart';
+import 'package:splitify/screens/signup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -47,7 +49,7 @@ class SplashScreenState extends State<SplashScreen> {
         if (isLoggedIn) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ChangeSuccessfully()),
+            MaterialPageRoute(builder: (context) => LoginScreen()),
           );
         } else {
           Navigator.pushReplacement(
