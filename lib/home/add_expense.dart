@@ -45,7 +45,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 90,
         backgroundColor: Colors.white,

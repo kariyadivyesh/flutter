@@ -38,12 +38,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       String email = _emailController.text.trim();
       String phone = _phoneController.text.trim();
 
-      // abhi ke liye locally save
+   
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Profile Saved: $name, $email, $phone")),
       );
 
-      // yaha tum database ya shared_preferences me save kar sakte ho
+      
     }
   }
 

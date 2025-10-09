@@ -1,8 +1,8 @@
-// group_data.dart
+// lib/home/group_data.dart
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-List<Map<String, dynamic>> groups = [
+List<Map<String, dynamic>> defaultGroups = [
   {
     "icon": "🏖️",
     "title": "Goa Trip",
@@ -30,7 +30,7 @@ List<Map<String, dynamic>> groups = [
   },
 ];
 
-// 🧠 Load groups from SharedPreferences
+// Load groups from SharedPreferences
 Future<List<Map<String, dynamic>>> loadGroupsFromPrefs() async {
   final prefs = await SharedPreferences.getInstance();
   final savedData = prefs.getString('groupsList');
@@ -38,11 +38,11 @@ Future<List<Map<String, dynamic>>> loadGroupsFromPrefs() async {
     final decoded = jsonDecode(savedData) as List;
     return decoded.map((e) => Map<String, dynamic>.from(e)).toList();
   }
-  return groups;
+  return defaultGroups;
 }
 
-// 💾 Save groups to SharedPreferences
+// Save groups to SharedPreferences
 Future<void> saveGroupsToPrefs(List<Map<String, dynamic>> updatedGroups) async {
   final prefs = await SharedPreferences.getInstance();
-  prefs.setString('groupsList', jsonEncode(updatedGroups));
+  await prefs.setString('groupsList', jsonEncode(updatedGroups));
 }

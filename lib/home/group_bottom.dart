@@ -1,11 +1,12 @@
+// lib/home/group_bottom.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:splitify/home/group.dart'; // ✅ Import Group Screen
-import 'package:splitify/home/group_data.dart';
+import 'group_data.dart';
+import 'group.dart';
 
 class GroupBottom extends StatefulWidget {
-  const GroupBottom({super.key});
+  const GroupBottom({Key? key}) : super(key: key);
 
   @override
   State<GroupBottom> createState() => _GroupBottomState();
@@ -21,101 +22,89 @@ class _GroupBottomState extends State<GroupBottom> {
   }
 
   Future<void> _loadGroups() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedGroups = prefs.getString('groupsList');
-    if (savedGroups != null) {
-      final decoded = jsonDecode(savedGroups) as List;
+    try {
+      final loadedGroups = await loadGroupsFromPrefs(); // dynamic groups
       setState(() {
-        groupsList = decoded.map((e) => Map<String, dynamic>.from(e)).toList();
+        groupsList = loadedGroups;
       });
-    } else {
-      groupsList = groups; // Default static groups from your group_data.dart
+    } catch (e) {
+      setState(() {
+        groupsList = [];
+      });
     }
   }
 
-  Future<void> _saveGroups() async {
+  Future<void> _deleteGroup(int index) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('groupsList', jsonEncode(groupsList));
-  }
-
-  void _deleteGroup(int index) async {
     setState(() {
-      groupsList.removeAt(index);
+      groupsList.removeAt(index); // remove from local list
     });
-    await _saveGroups();
-  }
-
-  void _openGroupDetail(Map<String, dynamic> group) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Group(
-          groupName: group["title"],
-          groupId: group["id"] ?? "No ID",
-        ),
-      ),
+    await prefs.setString(
+        'groupsList', jsonEncode(groupsList)); // save updated list
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Group deleted successfully")),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // ✅ White background
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        title: const Text("Groups"),
+        backgroundColor: Colors.white, // white AppBar
         elevation: 0,
-        title: const Text("Splitify", style: TextStyle(color: Colors.black)),
+        foregroundColor: Colors.black, // black text/icons
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Groups",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            Expanded(
-              child: groupsList.isEmpty
-                  ? const Center(child: Text("No groups yet"))
-                  : ListView.builder(
-                      itemCount: groupsList.length,
-                      itemBuilder: (context, index) {
-                        final group = groupsList[index];
-                        return Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 64, 155, 230),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: ListTile(
-                                onTap: () => _openGroupDetail(group),
-                                leading: Text(group["icon"] ?? "💬",
-                                    style: const TextStyle(fontSize: 24)),
-                                title: Text(group["title"] ?? "Unnamed Group",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                        fontSize: 20)),
-                                subtitle: Text(group["date"] ?? "",
-                                    style:
-                                        const TextStyle(color: Colors.white70)),
-                                trailing: IconButton(
-                                  icon: const Icon(Icons.delete,
-                                      color: Colors.white),
-                                  onPressed: () => _deleteGroup(index),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                          ],
-                        );
-                      },
+      body: groupsList.isEmpty
+          ? const Center(child: Text("No groups found"))
+          : ListView.builder(
+              itemCount: groupsList.length,
+              itemBuilder: (context, index) {
+                final g = groupsList[index];
+                return Card(
+                  color: Colors.white, // ✅ Card background white
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  elevation: 2,
+                  child: ListTile(
+                    leading: Text(
+                      g['icon'] ?? '💬',
+                      style: const TextStyle(fontSize: 24),
                     ),
+                    title: Text(
+                      g['title'] ?? 'Unnamed Group',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    subtitle: Text("Created on ${g['date'] ?? ''}"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteGroup(index),
+                        ),
+                        const Icon(Icons.arrow_forward_ios, size: 18),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Group(
+                            groupName: g['title'] ?? 'Unnamed Group',
+                            groupId: g['id'] ?? '',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
-          ],
-        ),
-      ),
     );
   }
 }

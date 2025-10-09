@@ -1,99 +1,93 @@
+// lib/home/settleup.dart
 import 'package:flutter/material.dart';
-import 'settlement_history_screen.dart';
 
-class SettleUpScreen extends StatelessWidget {
+class SettleUpScreen extends StatefulWidget {
   final String payer;
   final String receiver;
-  final int amount;
   final String group;
+  final double amount;
 
   const SettleUpScreen({
-    super.key,
+    Key? key,
     required this.payer,
     required this.receiver,
-    required this.amount,
     required this.group,
-  });
+    required this.amount,
+  }) : super(key: key);
 
+  @override
+  State<SettleUpScreen> createState() => _SettleUpScreenState();
+}
+
+class _SettleUpScreenState extends State<SettleUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // White background
       appBar: AppBar(
+        title: const Text("Settle Up"),
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
-        title: const Text(
-          "Settle Up",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 36),
+            // Big bordered box
             Container(
-              padding: const EdgeInsets.all(110),
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black54),
-                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "$payer owes $receiver",
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "₹$amount",
+                    "Group: ${widget.group}",
                     style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   Text(
-                    "Group: $group",
-                    style: const TextStyle(fontSize: 16, color: Colors.grey),
+                    "Payer: ${widget.payer}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Receiver: ${widget.receiver}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Amount: ₹${widget.amount.toStringAsFixed(2)}",
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 50),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF5B5BFF),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-              ),
-              onPressed: () {
-                settlementHistory.add({
-                  "payer": payer,
-                  "receiver": receiver,
-                  "amount": amount,
-                  "group": group,
-                });
-
-                //  Snackbar show
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Record moved to Settlement History"),
-                    duration: Duration(seconds: 2),
+            const SizedBox(height: 30),
+            // Confirm Settlement button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Return true to indicate settlement confirmed
+                  Navigator.pop(context, true);
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                );
-
-                //  Back to Settlement screen with true
-                Navigator.pop(context, true);
-              },
-              child: const Text(
-                "Confirm Settlement",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  backgroundColor: Colors.indigo,
+                ),
+                child: const Text(
+                  "Confirm Settlement",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
             ),
