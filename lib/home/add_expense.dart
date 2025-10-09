@@ -1,29 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:splitify/home/custom_split.dart';
 
 class AddExpensesScreen extends StatefulWidget {
-  const AddExpensesScreen({super.key});
+  final List<String> groupMembers;
+
+  const AddExpensesScreen({super.key, required this.groupMembers});
 
   @override
   _AddExpensesScreenState createState() => _AddExpensesScreenState();
 }
 
 class _AddExpensesScreenState extends State<AddExpensesScreen> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+
+  String _selectedPaidBy = '';
   String _splitType = 'Equally';
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPaidBy =
+        widget.groupMembers.isNotEmpty ? widget.groupMembers[0] : '';
+    _dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Screen background is white
+      backgroundColor: Colors.white, 
       appBar: AppBar(
         toolbarHeight: 90,
-        backgroundColor: Colors.white, // AppBar background is white
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Center(
           child: Text(
@@ -36,9 +65,7 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
           ),
         ),
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(30),
-          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
         ),
       ),
       body: SingleChildScrollView(
@@ -47,36 +74,103 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFormSection('Title', 'Enter a Title'),
-              _buildFormSection('Amount', 'Enter Amount'),
-              _buildFormSection('Date', 'Select Date'),
+              // Title
+              const Text(
+                'Title',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  hintText: 'Enter a Title',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                ),
+              ),
               const SizedBox(height: 20),
-              // Paid by
+
+              // Amount
+              const Text(
+                'Amount',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter Amount',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Date
+              const Text(
+                'Date',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _dateController,
+                readOnly: true,
+                onTap: () => _selectDate(context),
+                decoration: InputDecoration(
+                  hintText: 'Select Date',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  suffixIcon: const Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Paid By Dropdown
               const Text(
                 'Paid by',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('Rahul', style: TextStyle(fontSize: 16)),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedPaidBy,
+                    isExpanded: true,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedPaidBy = newValue!;
+                      });
+                    },
+                    items: widget.groupMembers
+                        .map((member) => DropdownMenuItem<String>(
+                              value: member,
+                              child: Text(member),
+                            ))
+                        .toList(),
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
-              // Split
+
+              // Split Section
               const Text(
                 'Split',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
               Row(
@@ -97,11 +191,6 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                             : Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: _splitType == 'Equally'
-                                ? Colors.transparent
-                                : Colors.grey.shade400,
-                          ),
                         ),
                       ),
                       child: const Text('Equally'),
@@ -110,14 +199,16 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CustomExpensesScreen()));
+                      onPressed: () async {
                         setState(() {
                           _splitType = 'Custom';
                         });
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CustomExpensesScreen(),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _splitType == 'Custom'
@@ -128,11 +219,6 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                             : Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: _splitType == 'Custom'
-                                ? Colors.transparent
-                                : Colors.grey.shade400,
-                          ),
                         ),
                       ),
                       child: const Text('Custom'),
@@ -141,15 +227,34 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
                 ],
               ),
               const SizedBox(height: 40),
+
               // Save Button
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (_titleController.text.isNotEmpty &&
+                      _amountController.text.isNotEmpty) {
+                    final newExpense = {
+                      "title": _titleController.text,
+                      "amount": double.parse(_amountController.text),
+                      "paidBy": _selectedPaidBy,
+                      "splitType": _splitType,
+                      "splitMembers": widget.groupMembers,
+                      "date": _dateController.text,
+                    };
+                    Navigator.pop(context, newExpense);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Please fill all fields"),
+                    ));
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 95, 87, 241),
                   foregroundColor: Colors.white,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 child: const Text('Save', style: TextStyle(fontSize: 18)),
               ),
@@ -157,32 +262,6 @@ class _AddExpensesScreenState extends State<AddExpensesScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildFormSection(String label, String hintText) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-            hintText,
-            style: const TextStyle(color: Colors.grey),
-          ),
-        ),
-        const SizedBox(height: 20),
-      ],
     );
   }
 }

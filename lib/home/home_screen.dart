@@ -238,7 +238,6 @@ class HomeScreen extends StatelessWidget {
         },
       ),
 
-      // Bottom Nav Bar
     );
   }
 }
