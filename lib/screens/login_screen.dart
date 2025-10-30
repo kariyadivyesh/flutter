@@ -21,110 +21,112 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(40),
-                  child: Image(
-                      image: AssetImage('assets/images/splitify_logo.jpeg')),
-                ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Text(
-                'Splitify',
-                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Login To Splitify',
-                style: TextStyle(fontSize: 40),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      labelText: 'Enter Your Email',
-                      labelStyle: TextStyle(fontSize: 20, color: Colors.black),
-                      prefixIcon: Icon(Icons.email)),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      labelText: 'Enter Your Password',
-                      labelStyle: TextStyle(fontSize: 20, color: Colors.black),
-                      prefixIcon: Icon(Icons.lock)),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ForgotPassword()));
-                      },
-                      child: Text('Forgot Password?'))
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomBarScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image(
+                        image: AssetImage('assets/images/splitify_logo.jpeg')),
                   ),
-                  child: Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white, fontSize: 30),
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                '----------OR----------',
-                style: TextStyle(fontSize: 30),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                  onPressed: () async {
-                    //if successfully logged in (cred are correct)
-
-                    var sharedPref = await SharedPreferences.getInstance();
-                    sharedPref.setBool(SplashScreenState.KEYLOGIN, true);
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignupScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent),
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(fontSize: 25, color: Colors.white),
-                  )),
-            ],
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                Text(
+                  'Splitify',
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'Login To Splitify',
+                  style: TextStyle(fontSize: 40),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        labelText: 'Enter Your Email',
+                        labelStyle: TextStyle(fontSize: 20, color: Colors.black),
+                        prefixIcon: Icon(Icons.email)),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        labelText: 'Enter Your Password',
+                        labelStyle: TextStyle(fontSize: 20, color: Colors.black),
+                        prefixIcon: Icon(Icons.lock)),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPassword()));
+                        },
+                        child: Text('Forgot Password?'))
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomBarScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                    ),
+                    child: Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  '----------OR----------',
+                  style: TextStyle(fontSize: 30),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      //if successfully logged in (cred are correct)
+            
+                      var sharedPref = await SharedPreferences.getInstance();
+                      sharedPref.setBool(SplashScreenState.KEYLOGIN, true);
+            
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignupScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent),
+                    child: Text(
+                      'Sign Up',
+                      style: TextStyle(fontSize: 25, color: Colors.white),
+                    )),
+              ],
+            ),
           ),
         ),
       ),
